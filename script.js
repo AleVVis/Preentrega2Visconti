@@ -33,7 +33,8 @@ class Estudiante {
   
     calcularPromedioFinal() {
       const sum = this.notas.reduce((acumulador, nota) => acumulador + nota.calificacion, 0);
-      return sum / this.notas.length;
+      const promedio = sum / this.notas.length;
+      return promedio.toFixed(2)
     } //el método reduce() suma todas las calificaciones de las notas almacenadas en el array notas. 
     //Luego, se divide la suma obtenida por la cantidad de notas para obtener el promedio final.
   }

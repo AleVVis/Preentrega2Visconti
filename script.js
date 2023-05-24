@@ -1,9 +1,24 @@
-/*Se trata de la pag interna de un colegio donde los profesores pueden ver los cursos que tienen a cargo,
+/*Se trata de la pag interna de un colegio donde los profesores al loguearse pueden ver los cursos que tienen a cargo,
 elegir su curso, calificar a los alumnos de maneras diferentes con Nota, NotaFinal y Concepto (todavía no tienen diferencias pero quizá más adelante sí)
-y obtener un promedio final.
+y obtener un promedio final.*/
 
-La clase Estudiante tiene un constructor que recibe tres parámetros: id, nombre y curso. 
-Estos parámetros se asignan a las propiedades correspondientes al estudiante.*/
+
+
+  // Función de logueo (sólo simula)
+  function login() {
+    // Solicitar al usuario que ingrese el nombre de usuario y la contraseña
+    const usuario = solicitarEntrada("Ingrese su nombre de usuario:");
+    const contrasena = solicitarEntrada("Ingrese su contraseña:");
+  
+    // Mostrar mensaje de inicio de sesión exitoso
+    mostrarMensaje("Inicio de sesión exitoso. ¡Bienvenido!");
+  }
+  
+  // Inicia la ejecución del programa
+  login();
+
+  /*La clase Estudiante tiene un constructor que recibe tres parámetros: id, nombre y curso. 
+  Estos parámetros se asignan a las propiedades correspondientes al estudiante.*/
 class Estudiante {
     constructor(id, nombre, curso) {
       this.id = id;
@@ -50,6 +65,8 @@ class Estudiante {
   function solicitarEntrada(mensaje) {
     return prompt(mensaje);
   }
+
+
   
   //esta función filtra los estudiantes según el curso seleccionado y permite al usuario elegir un estudiante específico mediante su id
   function elegirEstudiante(cursoSelec) {
@@ -59,8 +76,8 @@ class Estudiante {
     //Se muestra al usuario la lista de estudiantes disponibles para el curso y se solicita que ingrese el ID del estudiante a evaluar.
     let mensajePresentacion = `Estos son tus alumnos de ${cursoSelec}. Ingresa el ID del estudiante a evaluar:\n`;
     
-    estudiantesFiltrados.forEach(estudiante => {
-      mensajePresentacion += `${estudiante.id} - ${estudiante.nombre} de ${estudiante.curso}\n`;
+    estudiantesFiltrados.forEach(e => {
+      mensajePresentacion += `${e.id} - ${e.nombre} de ${e.curso}\n`;
     });
   
     let respuestaUser = parseInt(prompt(mensajePresentacion));
@@ -98,7 +115,7 @@ class Estudiante {
     //Se agrega la segunda nota (prueba final) al estudiante y se muestra un mensaje de confirmación junto con el promedio final del estudiante.
     estudiante.agregarNota(nuevaNotaFinal);
     mostrarMensaje(`Se ha agregado la segunda nota ${calificacionFinal} al estudiante ${estudiante.nombre}.`);
-    mostrarMensaje(`El promedio final del estudiante ${estudiante.nombre} es: ${estudiante.calcularPromedioFinal()}`);
+    
   }
 
   function ingresarNotaConcepto(estudiante) {
@@ -110,6 +127,7 @@ class Estudiante {
     // Se agrega la nota de concepto al estudiante y se muestra un mensaje de confirmación.
     estudiante.agregarNota(nuevaNotaConcepto);
     mostrarMensaje(`Se ha agregado la nota de concepto ${calificacionConcepto} al estudiante ${estudiante.nombre}.`);
+    mostrarMensaje(`El promedio final del estudiante ${estudiante.nombre} es: ${estudiante.calcularPromedioFinal()}`);
   }
   
   const grados = [
@@ -160,6 +178,6 @@ class Estudiante {
   
   const estudianteSeleccionado = elegirEstudiante(cursoSeleccionado);
   ingresarNotaEstudiante(estudianteSeleccionado);
-  ingresarNotaConcepto(estudianteSeleccionado);
   ingresarNotaFinal(estudianteSeleccionado);
+  ingresarNotaConcepto(estudianteSeleccionado);
   

@@ -1,5 +1,6 @@
 /*Se trata de la pag interna de un colegio donde los profesores pueden ver los cursos que tienen a cargo,
-elegir su curso, calificar a los alumnos y obtener una nota final.
+elegir su curso, calificar a los alumnos de maneras diferentes con Nota, NotaFinal y Concepto (todavía no tienen diferencias pero quizá más adelante sí)
+y obtener un promedio final.
 
 La clase Estudiante tiene un constructor que recibe tres parámetros: id, nombre y curso. 
 Estos parámetros se asignan a las propiedades correspondientes al estudiante.*/
@@ -8,25 +9,19 @@ class Estudiante {
       this.id = id;
       this.nombre = nombre;
       this.curso = curso;
-      this.notas = [];   //inicializo la propiedad notas como un array vacío.
+      this.notas = []; //inicializo la propiedad notas como un array vacío.
     }
-//Métodos de la clase Estudiante
+    //Métodos de la clase Estudiante
     agregarNota(nota) {
       this.notas.push(nota);
     } //Recibe un objeto nota y lo agrega al array de notas del estudiante.
   
-    calcularPromedio() {
-      const sum = this.notas.reduce((acumulador, nota) => acumulador + nota.calificacion, 0);
-      return sum / this.notas.length;
-    }//Calcula el promedio de las calificaciones de todas las notas del estudiante.
-  
     calcularPromedioFinal() {
       const sum = this.notas.reduce((acumulador, nota) => acumulador + nota.calificacion, 0);
       return sum / this.notas.length;
-    }//el método reduce() suma todas las calificaciones de las notas almacenadas en el array notas. 
+    } //el método reduce() suma todas las calificaciones de las notas almacenadas en el array notas. 
     //Luego, se divide la suma obtenida por la cantidad de notas para obtener el promedio final.
   }
-  
   
   //La clase Notas tiene un constructor que recibe un parámetro calificacion. 
   //Este parámetro se asigna a la propiedad calificacion, y se inicializa la propiedad fecha con la fecha actual
@@ -37,7 +32,7 @@ class Estudiante {
     }
   }
   
-  //recibe un número y un mensaje, y valida que el número sea un valor numérico. 
+  //Esta función recibe un número y un mensaje, y valida que el número sea un valor numérico. 
   //Si no es un número válido, solicita al usuario que ingrese un nuevo número hasta que sea válido.
   function validarNumero(numero, mensaje) {
     while (isNaN(numero)) {
@@ -56,51 +51,65 @@ class Estudiante {
     return prompt(mensaje);
   }
   
-  //
-  function elegirEstudiante(curso) {
-  //Se filtran los estudiantes según el curso seleccionado.  
-    const estudiantesFiltrados = ESTUDIANTES.filter(estudiante => estudiante.curso === curso);
-  //Se muestra al usuario la lista de estudiantes disponibles para el curso y se solicita que ingrese el ID del estudiante a evaluar.
-    let mensajePresentacion = `Estos son tus alumnos de ${curso}. Ingresa el ID del estudiante a evaluar:\n`;
-  
+  //esta función filtra los estudiantes según el curso seleccionado y permite al usuario elegir un estudiante específico mediante su id
+  function elegirEstudiante(cursoSelec) {
+    //Se filtran los estudiantes según el curso seleccionado.  
+    const estudiantesFiltrados = ESTUDIANTES.filter(estudiante => estudiante.curso === cursoSelec);
+    
+    //Se muestra al usuario la lista de estudiantes disponibles para el curso y se solicita que ingrese el ID del estudiante a evaluar.
+    let mensajePresentacion = `Estos son tus alumnos de ${cursoSelec}. Ingresa el ID del estudiante a evaluar:\n`;
+    
     estudiantesFiltrados.forEach(estudiante => {
       mensajePresentacion += `${estudiante.id} - ${estudiante.nombre} de ${estudiante.curso}\n`;
     });
   
     let respuestaUser = parseInt(prompt(mensajePresentacion));
     respuestaUser = validarNumero(respuestaUser, mensajePresentacion);
-//Se valida que el ID ingresado sea válido y se devuelve el estudiante seleccionado.
+
+    //Se valida que el ID ingresado sea válido y se devuelve el estudiante seleccionado.
+    //WHILE  Mientras no se encuentre un estudiante cuyo id sea igual a respuestaUser...hacé lo siguiente
     while (!estudiantesFiltrados.find(estudiante => estudiante.id === respuestaUser)) {
       mostrarMensaje("El ID del estudiante ingresado no es válido. Por favor, inténtalo nuevamente.");
       respuestaUser = parseInt(prompt(mensajePresentacion));
-      respuestaUser = validarNumero(respuestaUser, mensajePresentacion);
     }
-  
+  //si encuentra un estudiante con el id válido, lo retorna mediante el método find()
     return estudiantesFiltrados.find(estudiante => estudiante.id === respuestaUser);
   }
   
   
   function ingresarNotaEstudiante(estudiante) {
-//Se solicita al usuario que ingrese la primera nota del estudiante seleccionado.
+    //Se solicita al usuario que ingrese la primera nota del estudiante seleccionado.
     let calificacionEstudiante = parseFloat(solicitarEntrada(`Ingresa la primera nota del estudiante ${estudiante.nombre}:`));
     calificacionEstudiante = validarNumero(calificacionEstudiante, `Ingresa la primera nota del estudiante ${estudiante.nombre}:`);
-//Se valida que la nota ingresada sea válida y se crea un objeto Notas con la calificación.
+    //Se valida que la nota ingresada sea válida y se crea un objeto Notas con la calificación. Creo el objeto Notas para encapsular
+    //la calificación y la fecha en que se creó.
     const nuevaNota = new Notas(calificacionEstudiante);
-//Se agrega la primera nota al estudiante y se muestra un mensaje de confirmación.
+    //Se agrega la primera nota al estudiante con el método agregarNota para tener su historial y se muestra un mensaje de confirmación.
     estudiante.agregarNota(nuevaNota);
     mostrarMensaje(`Se ha agregado la nota ${calificacionEstudiante} al estudiante ${estudiante.nombre}.`);
   }
   
   function ingresarNotaFinal(estudiante) {
-//Se solicita al usuario que ingrese la segunda nota (prueba final) del estudiante seleccionado.
+    //Se solicita al usuario que ingrese la segunda nota (prueba final) del estudiante seleccionado.
     let calificacionFinal = parseFloat(solicitarEntrada(`Ingresa la segunda nota del estudiante ${estudiante.nombre}:`));
     calificacionFinal = validarNumero(calificacionFinal, `Ingresa la nota de la segunda nota del estudiante ${estudiante.nombre}:`);
-//Se valida que la nota ingresada sea válida y se crea un objeto Notas con la calificación final.
+    //Se valida que la nota ingresada sea válida y se crea un objeto Notas con la calificación final.
     const nuevaNotaFinal = new Notas(calificacionFinal);
-//Se agrega la segunda nota (prueba final) al estudiante y se muestra un mensaje de confirmación junto con el promedio final del estudiante.
+    //Se agrega la segunda nota (prueba final) al estudiante y se muestra un mensaje de confirmación junto con el promedio final del estudiante.
     estudiante.agregarNota(nuevaNotaFinal);
-    mostrarMensaje(`Se ha agregado la nota del examen final ${calificacionFinal} al estudiante ${estudiante.nombre}.`);
+    mostrarMensaje(`Se ha agregado la segunda nota ${calificacionFinal} al estudiante ${estudiante.nombre}.`);
     mostrarMensaje(`El promedio final del estudiante ${estudiante.nombre} es: ${estudiante.calcularPromedioFinal()}`);
+  }
+
+  function ingresarNotaConcepto(estudiante) {
+    // Se solicita al usuario que ingrese la nota de concepto del estudiante seleccionado.
+    let calificacionConcepto = parseFloat(solicitarEntrada(`Ingresa la nota de concepto del estudiante ${estudiante.nombre}:`));
+    calificacionConcepto = validarNumero(calificacionConcepto, `Ingresa la nota de concepto del estudiante ${estudiante.nombre}:`);
+    // Se valida que la nota ingresada sea válida y se crea un objeto Notas con la calificación de concepto.
+    const nuevaNotaConcepto = new Notas(calificacionConcepto);
+    // Se agrega la nota de concepto al estudiante y se muestra un mensaje de confirmación.
+    estudiante.agregarNota(nuevaNotaConcepto);
+    mostrarMensaje(`Se ha agregado la nota de concepto ${calificacionConcepto} al estudiante ${estudiante.nombre}.`);
   }
   
   const grados = [
@@ -151,4 +160,6 @@ class Estudiante {
   
   const estudianteSeleccionado = elegirEstudiante(cursoSeleccionado);
   ingresarNotaEstudiante(estudianteSeleccionado);
+  ingresarNotaConcepto(estudianteSeleccionado);
   ingresarNotaFinal(estudianteSeleccionado);
+  

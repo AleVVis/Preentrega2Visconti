@@ -23,62 +23,24 @@ const DOCENTES = [
 ];
 
 class Estudiante {
-    constructor(id, nombre, curso) {
-      this.id = id;
-      this.nombre = nombre;
-      this.curso = curso;
-      this.notas = []; //inicializo la propiedad notas como un array vacío.
-    }
-    //Métodos de la clase Estudiante
-    agregarNota(nota) {
-      this.notas.push(nota);
-    } //Recibe un objeto nota y lo agrega al array de notas del estudiante.
-  
-    calcularPromedioFinal() {
-      const sum = this.notas.reduce((acumulador, nota) => acumulador + nota.calificacion, 0);
-      const promedio = sum / this.notas.length;
-      return promedio.toFixed(2)
-    } //el método reduce() suma todas las calificaciones de las notas almacenadas en el array notas. 
-    //Luego, se divide la suma obtenida por la cantidad de notas para obtener el promedio final.
-  }
-  
-  //La clase Notas tiene un constructor que recibe un parámetro calificacion. 
-  //Este parámetro se asigna a la propiedad calificacion, y se inicializa la propiedad fecha con la fecha actual
-  class Notas {
-    constructor(calificacion) {
-      this.calificacion = calificacion;
-      this.fecha = new Date();
-    }
-  }
-  
-  //Esta función recibe un número y un mensaje, y valida que el número sea un valor numérico. 
-  //Si no es un número válido, solicita al usuario que ingrese un nuevo número hasta que sea válido.
-  function validarNumero(numero, mensaje) {
-    while (isNaN(numero)) {
-      numero = parseInt(prompt(`El valor ingresado no es un número válido. ${mensaje}`));
-    }
-    return numero;
-  }
-  
-  //Esta función muestra un mensaje en forma de alerta en el navegador.
-  function mostrarMensaje(mensaje) {
-    alert(mensaje);
-  }
-  
-  //Esta función muestra un mensaje y solicita una entrada al usuario utilizando prompt, devolviendo el valor ingresado.
-  function solicitarEntrada(mensaje) {
-    return prompt(mensaje);
+  constructor(id, nombre, curso) {
+    this.id = id;
+    this.nombre = nombre;
+    this.curso = curso;
+    this.notas = [0, 0, 0]; // Inicializa las notas con cero
+    this.promedioFinal = 0;
   }
 
-  calcularPromedioFinal() 
+  calcularPromedioFinal() {
     const sum = this.notas.reduce((total, nota) => total + nota, 0);
     return sum / this.notas.length;
-  
-  updatePromedios() 
+  }
+  static updatePromedios() {
     for (const estudiante of ESTUDIANTES) {
       estudiante.promedioFinal = estudiante.calcularPromedioFinal();
     }
-
+  }
+}
 
 const ESTUDIANTES = [
   new Estudiante(1, 'Carlos', 'Primer Grado'),
@@ -106,31 +68,6 @@ function showLoginForm() {
   loginForm.style.display = 'block';
   welcomeSection.style.display = 'none';
 }
-
-loginBtn.addEventListener('click', () => {
-  const teacherName = teacherNameInput.value.trim();
-  const password = passwordInput.value;
-
-  if (teacherName === '' || password === '') {
-    alert('Por favor, ingrese su nombre y contraseña.');
-    return;
-  }
-
-  const teacher = DOCENTES.find(
-    (docente) => docente.nombre === teacherName && docente.pass === password
-  );
-
-  if (teacher) {
-    currentTeacher = teacher;
-    welcomeMessage.textContent = `Bienvenido(a), ${currentTeacher.nombre}!`;
-
-    renderStudents();
-    saveDataToLocalStorage();
-    showWelcomeSection();
-  } else {
-    alert('Credenciales inválidas. Por favor, inténtelo de nuevo.');
-  }
-});
 
 function showWelcomeSection() {
   loginForm.style.display = 'none';
@@ -253,6 +190,32 @@ function retrieveDataFromLocalStorage() {
     }
   }
 }
+
+
+loginBtn.addEventListener('click', () => {
+  const teacherName = teacherNameInput.value.trim();
+  const password = passwordInput.value;
+
+  if (teacherName === '' || password === '') {
+    alert('Por favor, ingrese su nombre y contraseña.');
+    return;
+  }
+
+  const teacher = DOCENTES.find(
+    (docente) => docente.nombre === teacherName && docente.pass === password
+  );
+
+  if (teacher) {
+    currentTeacher = teacher;
+    welcomeMessage.textContent = `Bienvenido(a), ${currentTeacher.nombre}!`;
+
+    renderStudents();
+    saveDataToLocalStorage();
+    showWelcomeSection();
+  } else {
+    alert('Credenciales inválidas. Por favor, inténtelo de nuevo.');
+  }
+});
 
 retrieveDataFromLocalStorage();
 showLoginForm();

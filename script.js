@@ -1,24 +1,27 @@
-/*Se trata de la pag interna de un colegio donde los profesores al loguearse pueden ver los cursos que tienen a cargo,
-elegir su curso, calificar a los alumnos de maneras diferentes con Nota, NotaFinal y Concepto (todavía no tienen diferencias pero quizá más adelante sí)
-y obtener un promedio final.*/
+//Se muestra un formulario de inicio de sesión para que el maestro ingrese su nombre de usuario y contraseña.
+//Cuando el maestro hace clic en el botón de inicio de sesión, se verifica la validez de las credenciales ingresadas.
+//Si las credenciales son válidas, se muestra un mensaje de bienvenida al maestro y se muestran los estudiantes en la página.
+//El maestro puede ver una lista de estudiantes asignados a su comisión.
+//Para cada estudiante, se muestra una tarjeta con su nombre, curso y un espacio para ingresar las notas y el promedio.
+//El maestro puede ingresar las notas para cada estudiante y hacer clic en un botón para calcular el promedio final.
+//Al hacer clic en el botón de calcular promedio, se calcula el promedio final del estudiante y se muestra en pantalla.
+//Los datos de los estudiantes, incluyendo las notas y los promedios finales, se guardan en el LS
+//Docentes y pass:  Juan pass:123456   María pass:abcdef
 
-
-
-  // Función de logueo (sólo simula)
-  function login() {
-    // Solicitar al usuario que ingrese el nombre de usuario y la contraseña
-    const usuario = solicitarEntrada("Ingrese su nombre de usuario:");
-    const contrasena = solicitarEntrada("Ingrese su contraseña:");
-  
-    // Mostrar mensaje de inicio de sesión exitoso
-    mostrarMensaje("Inicio de sesión exitoso. ¡Bienvenido!");
+class Docente {
+  constructor(id, nombre, comisiones, pass) {
+    this.id = id;
+    this.nombre = nombre;
+    this.comisiones = comisiones;
+    this.pass = pass;
   }
-  
-  // Inicia la ejecución del programa
-  login();
+}
 
-  /*La clase Estudiante tiene un constructor que recibe tres parámetros: id, nombre y curso. 
-  Estos parámetros se asignan a las propiedades correspondientes al estudiante.*/
+const DOCENTES = [
+  new Docente(1, 'Juan', ['Primer Grado', 'Segundo Grado'], '123456'),
+  new Docente(2, 'María', ['Tercer Grado', 'Cuarto Grado'], 'abcdef'),
+];
+
 class Estudiante {
     constructor(id, nombre, curso) {
       this.id = id;
@@ -67,118 +70,189 @@ class Estudiante {
     return prompt(mensaje);
   }
 
-
+  calcularPromedioFinal() 
+    const sum = this.notas.reduce((total, nota) => total + nota, 0);
+    return sum / this.notas.length;
   
-  //esta función filtra los estudiantes según el curso seleccionado y permite al usuario elegir un estudiante específico mediante su id
-  function elegirEstudiante(cursoSelec) {
-    //Se filtran los estudiantes según el curso seleccionado.  
-    const estudiantesFiltrados = ESTUDIANTES.filter(estudiante => estudiante.curso === cursoSelec);
-    
-    //Se muestra al usuario la lista de estudiantes disponibles para el curso y se solicita que ingrese el ID del estudiante a evaluar.
-    let mensajePresentacion = `Estos son tus alumnos de ${cursoSelec}. Ingresa el ID del estudiante a evaluar:\n`;
-    
-    estudiantesFiltrados.forEach(e => {
-      mensajePresentacion += `${e.id} - ${e.nombre} de ${e.curso}\n`;
-    });
-  
-    let respuestaUser = parseInt(prompt(mensajePresentacion));
-    respuestaUser = validarNumero(respuestaUser, mensajePresentacion);
-
-    //Se valida que el ID ingresado sea válido y se devuelve el estudiante seleccionado.
-    //WHILE  Mientras no se encuentre un estudiante cuyo id sea igual a respuestaUser...hacé lo siguiente
-    while (!estudiantesFiltrados.find(estudiante => estudiante.id === respuestaUser)) {
-      mostrarMensaje("El ID del estudiante ingresado no es válido. Por favor, inténtalo nuevamente.");
-      respuestaUser = parseInt(prompt(mensajePresentacion));
+  updatePromedios() 
+    for (const estudiante of ESTUDIANTES) {
+      estudiante.promedioFinal = estudiante.calcularPromedioFinal();
     }
-  //si encuentra un estudiante con el id válido, lo retorna mediante el método find()
-    return estudiantesFiltrados.find(estudiante => estudiante.id === respuestaUser);
-  }
-  
-  
-  function ingresarNotaEstudiante(estudiante) {
-    //Se solicita al usuario que ingrese la primera nota del estudiante seleccionado.
-    let calificacionEstudiante = parseFloat(solicitarEntrada(`Ingresa la primera nota del estudiante ${estudiante.nombre}:`));
-    calificacionEstudiante = validarNumero(calificacionEstudiante, `Ingresa la primera nota del estudiante ${estudiante.nombre}:`);
-    //Se valida que la nota ingresada sea válida y se crea un objeto Notas con la calificación. Creo el objeto Notas para encapsular
-    //la calificación y la fecha en que se creó.
-    const nuevaNota = new Notas(calificacionEstudiante);
-    //Se agrega la primera nota al estudiante con el método agregarNota para tener su historial y se muestra un mensaje de confirmación.
-    estudiante.agregarNota(nuevaNota);
-    mostrarMensaje(`Se ha agregado la nota ${calificacionEstudiante} al estudiante ${estudiante.nombre}.`);
-  }
-  
-  function ingresarNotaFinal(estudiante) {
-    //Se solicita al usuario que ingrese la segunda nota (prueba final) del estudiante seleccionado.
-    let calificacionFinal = parseFloat(solicitarEntrada(`Ingresa la segunda nota del estudiante ${estudiante.nombre}:`));
-    calificacionFinal = validarNumero(calificacionFinal, `Ingresa la nota de la segunda nota del estudiante ${estudiante.nombre}:`);
-    //Se valida que la nota ingresada sea válida y se crea un objeto Notas con la calificación final.
-    const nuevaNotaFinal = new Notas(calificacionFinal);
-    //Se agrega la segunda nota (prueba final) al estudiante y se muestra un mensaje de confirmación junto con el promedio final del estudiante.
-    estudiante.agregarNota(nuevaNotaFinal);
-    mostrarMensaje(`Se ha agregado la segunda nota ${calificacionFinal} al estudiante ${estudiante.nombre}.`);
-    
+
+
+const ESTUDIANTES = [
+  new Estudiante(1, 'Carlos', 'Primer Grado'),
+  new Estudiante(2, 'Ana', 'Primer Grado'),
+  new Estudiante(3, 'Pedro', 'Segundo Grado'),
+  new Estudiante(4, 'Laura', 'Segundo Grado'),
+  new Estudiante(5, 'Marta', 'Segundo Grado'),
+  new Estudiante(6, 'Jorge', 'Segundo Grado'),
+  new Estudiante(7, 'Luis', 'Tercer Grado'),
+  new Estudiante(8, 'Paola', 'Tercer Grado'),
+  new Estudiante(9, 'Miguel', 'Cuarto Grado'),
+  new Estudiante(10, 'Valeria', 'Cuarto Grado'),
+];
+
+let currentTeacher = null;
+const loginForm = document.getElementById('loginForm');
+const welcomeSection = document.getElementById('welcomeSection');
+const welcomeMessage = document.getElementById('welcomeMessage');
+const studentsContainer = document.getElementById('studentsContainer');
+const teacherNameInput = document.getElementById('teacherName');
+const passwordInput = document.getElementById('password');
+const loginBtn = document.getElementById('loginBtn');
+
+function showLoginForm() {
+  loginForm.style.display = 'block';
+  welcomeSection.style.display = 'none';
+}
+
+loginBtn.addEventListener('click', () => {
+  const teacherName = teacherNameInput.value.trim();
+  const password = passwordInput.value;
+
+  if (teacherName === '' || password === '') {
+    alert('Por favor, ingrese su nombre y contraseña.');
+    return;
   }
 
-  function ingresarNotaConcepto(estudiante) {
-    // Se solicita al usuario que ingrese la nota de concepto del estudiante seleccionado.
-    let calificacionConcepto = parseFloat(solicitarEntrada(`Ingresa la nota de concepto del estudiante ${estudiante.nombre}:`));
-    calificacionConcepto = validarNumero(calificacionConcepto, `Ingresa la nota de concepto del estudiante ${estudiante.nombre}:`);
-    // Se valida que la nota ingresada sea válida y se crea un objeto Notas con la calificación de concepto.
-    const nuevaNotaConcepto = new Notas(calificacionConcepto);
-    // Se agrega la nota de concepto al estudiante y se muestra un mensaje de confirmación.
-    estudiante.agregarNota(nuevaNotaConcepto);
-    mostrarMensaje(`Se ha agregado la nota de concepto ${calificacionConcepto} al estudiante ${estudiante.nombre}.`);
-    mostrarMensaje(`El promedio final del estudiante ${estudiante.nombre} es: ${estudiante.calcularPromedioFinal()}`);
+  const teacher = DOCENTES.find(
+    (docente) => docente.nombre === teacherName && docente.pass === password
+  );
+
+  if (teacher) {
+    currentTeacher = teacher;
+    welcomeMessage.textContent = `Bienvenido(a), ${currentTeacher.nombre}!`;
+
+    renderStudents();
+    saveDataToLocalStorage();
+    showWelcomeSection();
+  } else {
+    alert('Credenciales inválidas. Por favor, inténtelo de nuevo.');
   }
-  
-  const grados = [
-    { curso: 'Primer Grado', profesor: 'Mabel' },
-    { curso: 'Segundo Grado', profesor: 'Susana' },
-    { curso: 'Tercer Grado', profesor: 'Mabel' },
-    { curso: 'Cuarto Grado', profesor: 'Roberto' },
-    { curso: 'Quinto Grado', profesor: 'Mabel' },
-    { curso: 'Sexto Grado', profesor: 'Roberto' },
-    { curso: 'Séptimo Grado', profesor: 'Susana' }
-  ];
-  
-  const ESTUDIANTES = [
-    new Estudiante(1, 'Juan', 'Primer Grado'),
-    new Estudiante(2, 'María', 'Segundo Grado'),
-    new Estudiante(3, 'Pedro', 'Tercer Grado'),
-    new Estudiante(4, 'Luisa', 'Cuarto Grado'),
-    new Estudiante(5, 'Ana', 'Quinto Grado'),
-    new Estudiante(6, 'Carlos', 'Sexto Grado'),
-    new Estudiante(7, 'Marta', 'Séptimo Grado'),
-    new Estudiante(8, 'Javier', 'Primer Grado'),
-    new Estudiante(9, 'Laura', 'Segundo Grado'),
-    new Estudiante(10, 'Sergio', 'Tercer Grado'),
-    new Estudiante(11, 'Paula', 'Cuarto Grado'),
-    new Estudiante(12, 'Roberto', 'Quinto Grado'),
-    new Estudiante(13, 'Lucía', 'Sexto Grado'),
-    new Estudiante(14, 'Diego', 'Séptimo Grado')
-  ];
-  
-  let cursoSeleccionado = null;
-  let respuestaCurso = null;
-  
-  while (!cursoSeleccionado) {
-    let mensajeCursos = "Hola Profesor! elige el ID del curso que quieras evaluar:\n";
-    grados.forEach((grado, index) => {
-      mensajeCursos += `${index + 1}. ${grado.curso} - Profesor(a): ${grado.profesor}\n`;
-    });
-  
-    respuestaCurso = parseInt(solicitarEntrada(mensajeCursos));
-    respuestaCurso = validarNumero(respuestaCurso, mensajeCursos);
-  
-    if (respuestaCurso >= 1 && respuestaCurso <= grados.length) {
-      cursoSeleccionado = grados[respuestaCurso - 1].curso;
-    } else {
-      mostrarMensaje("¡El número de curso seleccionado es inválido! Por favor, elige una opción válida.");
+});
+
+function showWelcomeSection() {
+  loginForm.style.display = 'none';
+  welcomeSection.style.display = 'block';
+}
+
+function renderStudents() {
+  studentsContainer.innerHTML = '';
+
+  for (const estudiante of ESTUDIANTES) {
+    if (currentTeacher.comisiones.includes(estudiante.curso)) {
+      const card = document.createElement('div');
+      card.classList.add('card', 'mb-3');
+
+      const cardBody = document.createElement('div');
+      cardBody.classList.add('card-body');
+
+      const studentName = document.createElement('h5');
+      studentName.classList.add('card-title');
+      studentName.textContent = estudiante.nombre;
+
+      const studentCourse = document.createElement('p');
+      studentCourse.classList.add('card-text');
+      studentCourse.textContent = `Curso: ${estudiante.curso}`;
+
+      const noteInputs = document.createElement('div');
+      noteInputs.classList.add('note-inputs');
+
+      for (let i = 0; i < 3; i++) {
+        const noteInput = document.createElement('input');
+        noteInput.type = 'number';
+        noteInput.classList.add('form-control', 'mb-2');
+        noteInput.placeholder = `Nota ${i + 1}`;
+        noteInput.value = estudiante.notas[i];
+
+        noteInput.addEventListener('input', () => {
+          estudiante.notas[i] = parseFloat(noteInput.value) || 0;
+          saveDataToLocalStorage();
+        });
+
+        noteInputs.appendChild(noteInput);
+      }
+
+      const calculateBtn = document.createElement('button');
+      calculateBtn.textContent = 'Calcular Promedio';
+      calculateBtn.classList.add('btn', 'btn-primary', 'mt-2');
+      calculateBtn.addEventListener('click', () => {
+        const average = estudiante.calcularPromedioFinal();
+        averageValue.textContent = average.toFixed(2);
+        saveDataToLocalStorage(); // Guardar los datos actualizados en el LocalStorage
+      });
+
+    
+
+      const averageText = document.createElement('p');
+      averageText.classList.add('card-text', 'mt-2', 'mb-0');
+      averageText.textContent = 'Promedio:';
+
+      const averageValue = document.createElement('span');
+      averageValue.classList.add('fw-bold');
+      averageValue.textContent = estudiante.promedioFinal ? estudiante.promedioFinal.toFixed(2) : 'N/A';
+
+
+      averageText.appendChild(averageValue);
+
+      cardBody.appendChild(studentName);
+      cardBody.appendChild(studentCourse);
+      cardBody.appendChild(noteInputs);
+      cardBody.appendChild(calculateBtn);
+      cardBody.appendChild(averageText);
+      card.appendChild(cardBody);
+
+      studentsContainer.appendChild(card);
     }
   }
+}
+
+function saveDataToLocalStorage() {
+  localStorage.setItem('currentTeacher', JSON.stringify(currentTeacher));
+  localStorage.setItem('ESTUDIANTES', JSON.stringify(ESTUDIANTES));
   
-  const estudianteSeleccionado = elegirEstudiante(cursoSeleccionado);
-  ingresarNotaEstudiante(estudianteSeleccionado);
-  ingresarNotaFinal(estudianteSeleccionado);
-  ingresarNotaConcepto(estudianteSeleccionado);
-  
+  // Guardar promedios actualizados
+  for (const estudiante of ESTUDIANTES) {
+    estudiante.promedioFinal = estudiante.calcularPromedioFinal();
+  }
+  localStorage.setItem('ESTUDIANTES_PROMEDIOS', JSON.stringify(ESTUDIANTES.map(estudiante => ({
+    id: estudiante.id,
+    promedioFinal: estudiante.promedioFinal
+  }))));
+}
+
+
+function retrieveDataFromLocalStorage() {
+  const storedTeacher = localStorage.getItem('currentTeacher');
+  const storedStudents = localStorage.getItem('ESTUDIANTES');
+  const storedStudentAverages = localStorage.getItem('ESTUDIANTES_PROMEDIOS');
+
+  if (storedTeacher) {
+    currentTeacher = JSON.parse(storedTeacher);
+    welcomeMessage.textContent = `Bienvenido(a), ${currentTeacher.nombre}!`;
+    renderStudents();
+    showWelcomeSection();
+  }
+
+  if (storedStudents) {
+    const parsedStudents = JSON.parse(storedStudents);
+    for (let i = 0; i < ESTUDIANTES.length; i++) {
+      ESTUDIANTES[i].notas = parsedStudents[i].notas;
+      ESTUDIANTES[i].promedioFinal = parsedStudents[i].promedioFinal;
+    }
+  }
+
+  if (storedStudentAverages) {
+    const parsedAverages = JSON.parse(storedStudentAverages);
+    for (let i = 0; i < ESTUDIANTES.length; i++) {
+      const student = ESTUDIANTES.find(estudiante => estudiante.id === parsedAverages[i].id);
+      if (student) {
+        student.promedioFinal = parsedAverages[i].promedioFinal;
+      }
+    }
+  }
+}
+
+retrieveDataFromLocalStorage();
+showLoginForm();
